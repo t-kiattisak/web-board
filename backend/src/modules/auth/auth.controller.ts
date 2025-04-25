@@ -9,6 +9,10 @@ import {
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { ResponseModel } from '@/common/decorators/response-model.decorator';
+import { UserResponse } from './dto/user.response';
+import { CurrentUser } from '@/common/decorators/currentUser.decorator';
+import { User } from './jwt.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -22,8 +26,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  getMe(@Request() req) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
-    return req.user;
+  @ResponseModel(UserResponse)
+  getMe(@CurrentUser() user: User) {
+    return user;
   }
 }
