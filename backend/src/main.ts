@@ -10,14 +10,15 @@ async function bootstrap() {
     logger: ['error', 'warn', 'log'],
   });
 
-  app.useGlobalInterceptors(new ResponseInterceptor(new Reflector()));
-  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
       whitelist: true,
     }),
   );
+
+  app.useGlobalInterceptors(new ResponseInterceptor(new Reflector()));
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   await app.listen(process.env.PORT ?? 3000);
 }

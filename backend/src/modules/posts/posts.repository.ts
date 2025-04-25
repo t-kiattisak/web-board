@@ -7,7 +7,10 @@ export class PostsRepository {
 
   findAll() {
     return this.prisma.post.findMany({
-      include: { user: true },
+      include: {
+        user: true,
+        comments: { orderBy: { createdAt: 'desc' } },
+      },
       orderBy: { createdAt: 'desc' },
     });
   }
@@ -15,7 +18,10 @@ export class PostsRepository {
   findById(id: string) {
     return this.prisma.post.findUnique({
       where: { id },
-      include: { user: true, comments: true },
+      include: {
+        user: true,
+        comments: { orderBy: { createdAt: 'desc' } },
+      },
     });
   }
 
