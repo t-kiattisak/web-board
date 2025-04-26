@@ -51,7 +51,7 @@ const PostDetail = () => {
 
   const post = data.data
   return (
-    <div className='max-w-2xl mx-auto p-4 space-y-6'>
+    <div className='p-4 space-y-6'>
       <Link
         href='/'
         className='inline-flex items-center p-2 bg-primary-foreground/10 rounded-full'
