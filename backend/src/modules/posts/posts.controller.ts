@@ -7,7 +7,6 @@ import {
   UseGuards,
   Put,
   Delete,
-  Response,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -32,23 +31,35 @@ export class PostsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@CurrentUser() user: User, @Body() dto: CreatePostDto) {
-    return this.service.createPost(user.userId, dto);
+  async create(@CurrentUser() user: User, @Body() dto: CreatePostDto) {
+    const created = await this.service.createPost(user.userId, dto);
+    return {
+      data: created,
+      message: 'Post has been successfully created',
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Put(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @CurrentUser() user: User,
     @Body() dto: UpdatePostDto,
   ) {
-    return this.service.updatePost(id, user.userId, dto);
+    const updated = await this.service.updatePost(id, user.userId, dto);
+    return {
+      data: updated,
+      message: 'Post has been successfully updated',
+    };
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  delete(@Param('id') id: string, @CurrentUser() user: User) {
-    return this.service.deletePost(id, user.userId);
+  async delete(@Param('id') id: string, @CurrentUser() user: User) {
+    const deleted = await this.service.deletePost(id, user.userId);
+    return {
+      data: deleted,
+      message: 'Post has been successfully deleted',
+    };
   }
 }
