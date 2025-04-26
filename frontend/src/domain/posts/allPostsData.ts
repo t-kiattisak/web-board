@@ -10,11 +10,17 @@ export interface AllPostsDaum {
   createdAt: string
   user: User
   comments: Comment[]
+  category: Category
+}
+interface Category {
+  id: string
+  name: string
 }
 
 interface User {
   id: string
   username: string
+  avatarUrl?: string
   createdAt: string
 }
 

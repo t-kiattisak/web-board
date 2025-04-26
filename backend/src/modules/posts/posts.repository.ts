@@ -9,6 +9,7 @@ export class PostsRepository {
     return this.prisma.post.findMany({
       include: {
         user: true,
+        category: { select: { id: true, name: true } },
         comments: { orderBy: { createdAt: 'desc' } },
       },
       orderBy: { createdAt: 'desc' },
@@ -20,6 +21,7 @@ export class PostsRepository {
       where: { id },
       include: {
         user: true,
+        category: { select: { id: true, name: true } },
         comments: {
           orderBy: { createdAt: 'desc' },
           select: {
@@ -42,13 +44,19 @@ export class PostsRepository {
       where: { userId },
       include: {
         user: true,
+        category: { select: { id: true, name: true } },
         comments: { orderBy: { createdAt: 'desc' } },
       },
       orderBy: { createdAt: 'desc' },
     });
   }
 
-  create(data: { title: string; content: string; userId: string }) {
+  create(data: {
+    title: string;
+    content: string;
+    userId: string;
+    categoryId?: string;
+  }) {
     return this.prisma.post.create({ data });
   }
 

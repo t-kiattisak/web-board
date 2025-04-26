@@ -23,7 +23,7 @@ const PostsList = () => {
   const { data, isLoading, refetch } = useAllPost()
   const [open, toggleOpen, setOpen] = useToggle()
   const session = useSession()
-
+  console.log("data", data)
   if (isLoading) {
     return <LoadingData />
   }
@@ -66,9 +66,9 @@ const PostsList = () => {
           <div key={index}>
             <Link href={`/post/${item.id}`}>
               <PostCard
-                avatarUrl='https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=3280&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                avatarUrl={item.user.avatarUrl}
                 author={item.user.username}
-                category='History'
+                category={item.category.name ?? ""}
                 title={item.title}
                 excerpt={item.content}
                 commentCount={item.comments.length}

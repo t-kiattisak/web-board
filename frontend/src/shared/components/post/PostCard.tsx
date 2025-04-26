@@ -3,7 +3,7 @@ import Image from "next/image"
 import { ReactNode } from "react"
 
 interface PostCardProps {
-  avatarUrl: string
+  avatarUrl?: string
   author: string
   category: string
   title: string
@@ -13,7 +13,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({
-  avatarUrl,
+  avatarUrl = "https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=3280&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   author,
   category,
   title,
@@ -37,9 +37,11 @@ export default function PostCard({
         {actions}
       </div>
 
-      <span className='inline-block w-fit text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full'>
-        {category}
-      </span>
+      {category && (
+        <span className='inline-block w-fit text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full'>
+          {category}
+        </span>
+      )}
 
       <h2 className='text-lg font-semibold leading-tight break-words line-clamp-1'>
         {title}

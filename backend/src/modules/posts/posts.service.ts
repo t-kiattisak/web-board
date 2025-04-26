@@ -17,7 +17,14 @@ export class PostsService {
     return this.repo.findAllByUserId(userId);
   }
 
-  createPost(userId: string, dto: { title: string; content: string }) {
+  createPost(
+    userId: string,
+    dto: {
+      title: string;
+      content: string;
+      categoryId?: string;
+    },
+  ) {
     return this.repo.create({ ...dto, userId });
   }
 

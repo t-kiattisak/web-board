@@ -19,7 +19,7 @@ import { Input } from "@/shared/components/ui/input"
 const formSchema = z.object({
   username: z
     .string()
-    .min(6, {
+    .min(4, {
       message: "กรอกตัวอักษรมากกว่า 6 ตัวอักษร",
     })
     .regex(/^[a-zA-Z][a-zA-Z0-9]*$/, {

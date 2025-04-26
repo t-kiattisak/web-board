@@ -8,4 +8,7 @@ export class CreatePostDto {
   @IsNotEmpty()
   @IsString()
   content: string;
+
+  @IsString()
+  categoryId?: string;
 }
