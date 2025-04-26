@@ -2,6 +2,7 @@ import { AllPostsData } from "@/domain/posts/allPostsData"
 import { createPostInput, CreatePostInput } from "@/domain/posts/createPost"
 import { updatePostInput, UpdatePostInput } from "@/domain/posts/updatePost"
 import { network } from "@/lib/utils/network"
+import { ResponseBaseData } from "@/shared/domain/reponse"
 
 export const allPost = async () => {
   const { data } = await network.get<AllPostsData>("/posts")
@@ -9,7 +10,10 @@ export const allPost = async () => {
 }
 
 export const createPost = async (input: CreatePostInput) => {
-  const { data } = await network.post("/posts", createPostInput.parse(input))
+  const { data } = await network.post<ResponseBaseData>(
+    "/posts",
+    createPostInput.parse(input)
+  )
   return data
 }
 

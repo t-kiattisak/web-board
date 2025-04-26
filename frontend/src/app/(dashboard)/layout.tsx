@@ -8,7 +8,7 @@ export default function DashboardLayout({
 }) {
   return (
     <div className='min-h-screen flex flex-col bg-background'>
-      <div className='fixed top-0 left-0 right-0'>
+      <div className='fixed z-10 top-0 left-0 right-0'>
         <Topbar />
       </div>
       <div className='h-16' />

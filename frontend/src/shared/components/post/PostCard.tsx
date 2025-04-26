@@ -35,9 +35,13 @@ export default function PostCard({
         {category}
       </span>
 
-      <h2 className='text-lg font-semibold leading-tight'>{title}</h2>
+      <h2 className='text-lg font-semibold leading-tight break-words line-clamp-1'>
+        {title}
+      </h2>
 
-      <p className='text-sm text-muted-foreground leading-relaxed'>{excerpt}</p>
+      <p className='text-sm text-muted-foreground leading-relaxed break-words line-clamp-3'>
+        {excerpt}
+      </p>
 
       <div className='flex items-center gap-1 text-xs text-muted-foreground'>
         <MessageCircle size={14} /> {commentCount} Comments
