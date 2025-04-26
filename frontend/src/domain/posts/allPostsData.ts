@@ -1,6 +1,6 @@
 import { ResponseBaseData } from "@/shared/domain/reponse"
 
-export type AllPostsData = ResponseBaseData<AllPostsDaum>
+export type AllPostsData = ResponseBaseData<AllPostsDaum[]>
 
 interface AllPostsDaum {
   id: string
