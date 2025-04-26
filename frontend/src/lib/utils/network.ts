@@ -1,5 +1,5 @@
 import axios from "axios"
-import { getSession } from "next-auth/react"
+import { getSession, signOut } from "next-auth/react"
 
 export const network = axios.create({
   baseURL: process.env.API_URL,
@@ -19,6 +19,16 @@ network.interceptors.request.use(
     return config
   },
   (error) => {
+    return Promise.reject(error)
+  }
+)
+
+network.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      await signOut({ callbackUrl: "/login" })
+    }
     return Promise.reject(error)
   }
 )

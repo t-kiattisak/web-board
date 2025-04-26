@@ -1,5 +1,6 @@
 import { MessageCircle } from "lucide-react"
 import Image from "next/image"
+import { ReactNode } from "react"
 
 interface PostCardProps {
   avatarUrl: string
@@ -8,6 +9,7 @@ interface PostCardProps {
   title: string
   excerpt: string
   commentCount: number
+  actions?: ReactNode
 }
 
 export default function PostCard({
@@ -17,18 +19,22 @@ export default function PostCard({
   title,
   excerpt,
   commentCount,
+  actions,
 }: PostCardProps) {
   return (
     <div className='p-6 space-y-3'>
-      <div className='flex items-center gap-3'>
-        <Image
-          width={32}
-          height={32}
-          src={avatarUrl}
-          alt={author}
-          className='w-8 h-8 rounded-full object-cover'
-        />
-        <span className='text-sm text-muted-foreground'>{author}</span>
+      <div className='flex items-center'>
+        <div className='flex items-center gap-3 flex-1'>
+          <Image
+            width={32}
+            height={32}
+            src={avatarUrl}
+            alt={author}
+            className='w-8 h-8 rounded-full object-cover'
+          />
+          <span className='text-sm text-muted-foreground'>{author}</span>
+        </div>
+        {actions}
       </div>
 
       <span className='inline-block w-fit text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full'>

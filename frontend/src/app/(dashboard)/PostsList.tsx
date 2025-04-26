@@ -20,7 +20,7 @@ import Link from "next/link"
 import React from "react"
 
 const PostsList = () => {
-  const { data, isLoading } = useAllPost()
+  const { data, isLoading, refetch } = useAllPost()
   const [open, toggleOpen, setOpen] = useToggle()
   const session = useSession()
 
@@ -50,7 +50,13 @@ const PostsList = () => {
               <DialogHeader>
                 <DialogTitle>Create Post</DialogTitle>
               </DialogHeader>
-              <CreatePostForm onClose={() => toggleOpen()} />
+              <CreatePostForm
+                createSuccess={() => {
+                  toggleOpen()
+                  refetch()
+                }}
+                onClose={() => toggleOpen()}
+              />
             </DialogContent>
           </Dialog>
         )}

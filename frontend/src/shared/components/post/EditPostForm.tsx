@@ -13,40 +13,45 @@ import {
   SelectValue,
 } from "../ui/select"
 import { Button } from "../ui/button"
-import { useCreatePost } from "@/hooks/services/posts"
+import { useUpdatePost } from "@/hooks/services/posts"
 import { toast } from "sonner"
+import { AllPostsDaum } from "@/domain/posts/allPostsData"
 
-const createPostSchema = z.object({
+const editPostSchema = z.object({
   community: z.string().optional(),
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
 })
 
-type CreatePostInput = z.infer<typeof createPostSchema>
+export type EditPostForm = z.infer<typeof editPostSchema>
+
 type CreatePostFormProps = {
   onClose: VoidFunction
-  createSuccess: VoidFunction
+  editSuccess: VoidFunction
+  defaultValues: AllPostsDaum
 }
-const CreatePostForm = ({ onClose, createSuccess }: CreatePostFormProps) => {
-  const form = useForm<CreatePostInput>({
-    resolver: zodResolver(createPostSchema),
-    defaultValues: {
-      community: "",
-      content: "",
-      title: "",
-    },
+const EditPostForm = ({
+  onClose,
+  defaultValues,
+  editSuccess,
+}: CreatePostFormProps) => {
+  const form = useForm<EditPostForm>({
+    resolver: zodResolver(editPostSchema),
+    defaultValues,
   })
-  const { mutate } = useCreatePost()
-  const onSubmit = (values: CreatePostInput) => {
+
+  const { mutate } = useUpdatePost()
+  const onSubmit = (values: EditPostForm) => {
     mutate(
       {
+        postId: defaultValues.id,
         title: values.title,
         content: values.content,
       },
       {
         onSuccess: (data) => {
-          toast(data.message ?? "Post has been successfully created")
-          createSuccess()
+          toast(data.message)
+          editSuccess()
         },
       }
     )
@@ -113,4 +118,4 @@ const CreatePostForm = ({ onClose, createSuccess }: CreatePostFormProps) => {
   )
 }
 
-export { CreatePostForm }
+export { EditPostForm }

@@ -30,11 +30,14 @@ export const createPost = async (input: CreatePostInput) => {
 
 export const updatePost = async (input: UpdatePostInput) => {
   const { postId, ...inputs } = updatePostInput.parse(input)
-  const { data } = await network.put(`/posts/${postId}`, inputs)
+  const { data } = await network.put<ResponseBaseData>(
+    `/posts/${postId}`,
+    inputs
+  )
   return data
 }
 
 export const deletePost = async (postId: string) => {
-  const { data } = await network.delete(`/posts/${postId}`)
+  const { data } = await network.delete<ResponseBaseData>(`/posts/${postId}`)
   return data
 }

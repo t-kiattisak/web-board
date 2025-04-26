@@ -2,6 +2,7 @@ import {
   allPost,
   allPostByUserId,
   createPost,
+  deletePost,
   getPostById,
   updatePost,
 } from "@/services/posts"
@@ -27,3 +28,4 @@ export const useGetPostById = (postId: string) =>
 
 export const useCreatePost = () => useMutation({ mutationFn: createPost })
 export const useUpdatePost = () => useMutation({ mutationFn: updatePost })
+export const useDeletePost = () => useMutation({ mutationFn: deletePost })
