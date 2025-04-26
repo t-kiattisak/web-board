@@ -1,11 +1,17 @@
 import { AllPostsData } from "@/domain/posts/allPostsData"
 import { createPostInput, CreatePostInput } from "@/domain/posts/createPost"
+import { PostByIdData } from "@/domain/posts/getPostByIdData"
 import { updatePostInput, UpdatePostInput } from "@/domain/posts/updatePost"
 import { network } from "@/lib/utils/network"
 import { ResponseBaseData } from "@/shared/domain/reponse"
 
 export const allPost = async () => {
   const { data } = await network.get<AllPostsData>("/posts")
+  return data
+}
+
+export const getPostById = async (postId: string) => {
+  const { data } = await network.get<PostByIdData>(`/posts/${postId}`)
   return data
 }
 

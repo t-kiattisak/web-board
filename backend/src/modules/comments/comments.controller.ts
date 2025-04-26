@@ -20,12 +20,16 @@ export class CommentsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(
+  async create(
     @Param('postId') postId: string,
     @CurrentUser() user: User,
     @Body() dto: CreateCommentDto,
   ) {
-    return this.service.create(postId, user.userId, dto);
+    const created = await this.service.create(postId, user.userId, dto);
+    return {
+      data: created,
+      message: 'Comment has been successfully created',
+    };
   }
 
   @UseGuards(JwtAuthGuard)

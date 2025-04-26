@@ -20,7 +20,19 @@ export class PostsRepository {
       where: { id },
       include: {
         user: true,
-        comments: { orderBy: { createdAt: 'desc' } },
+        comments: {
+          orderBy: { createdAt: 'desc' },
+          select: {
+            id: true,
+            content: true,
+            createdAt: true,
+            user: {
+              select: {
+                username: true,
+              },
+            },
+          },
+        },
       },
     });
   }

@@ -1,8 +1,24 @@
 import axios from "axios"
+import { getSession } from "next-auth/react"
 
 export const network = axios.create({
   baseURL: process.env.API_URL,
-  headers: {
-    Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG5fZG9lIiwic3ViIjoiODBjMmM3N2YtY2UxOC00ZmQzLTgxZDgtZjI4NWQ4MTc0ZGFkIiwiaWF0IjoxNzQ1NjUyNDYxLCJleHAiOjE3NDU2NTYwNjF9.OZyQVRO-RfdtlXzx1iclCt11vvp_imXIb3XFjokLGC4`,
-  },
 })
+
+let cachedToken: string | null = null
+
+network.interceptors.request.use(
+  async (config) => {
+    if (!cachedToken) {
+      const session = await getSession()
+      cachedToken = session?.user.token || null
+    }
+    if (cachedToken) {
+      config.headers.Authorization = `Bearer ${cachedToken}`
+    }
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
