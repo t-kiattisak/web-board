@@ -47,7 +47,7 @@ export default function Topbar() {
 
         <Drawer direction='right'>
           <DrawerTrigger asChild>
-            <MenuIcon />
+            <MenuIcon className='block md:hidden' />
           </DrawerTrigger>
           <DrawerContent className='bg-foreground text-white'>
             <DrawerHeader>
