@@ -1,5 +1,5 @@
 "use client"
-import { useAllPost } from "@/hooks/services/posts"
+import { useAllPostByUserId } from "@/hooks/services/posts"
 import { useToggle } from "@/hooks/useToggle"
 import { CreatePostForm } from "@/shared/components/post/CreatePostForm"
 import PostCard from "@/shared/components/post/PostCard"
@@ -14,13 +14,14 @@ import {
 import { Input } from "@/shared/components/ui/input"
 import { LoadingData } from "@/shared/components/ui/loading-data"
 import NotFoundData from "@/shared/components/ui/not-found-data"
-import { PlusIcon, SearchIcon } from "lucide-react"
+
+import { SearchIcon, PlusIcon, Link } from "lucide-react"
 import { useSession } from "next-auth/react"
-import Link from "next/link"
 import React from "react"
 
-const PostsList = () => {
-  const { data, isLoading } = useAllPost()
+const OutBlogList = () => {
+  const { data, isLoading } = useAllPostByUserId()
+
   const [open, toggleOpen, setOpen] = useToggle()
   const session = useSession()
 
@@ -75,4 +76,4 @@ const PostsList = () => {
   )
 }
 
-export default PostsList
+export default OutBlogList

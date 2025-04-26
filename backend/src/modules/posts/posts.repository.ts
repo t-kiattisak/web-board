@@ -37,6 +37,17 @@ export class PostsRepository {
     });
   }
 
+  findAllByUserId(userId: string) {
+    return this.prisma.post.findMany({
+      where: { userId },
+      include: {
+        user: true,
+        comments: { orderBy: { createdAt: 'desc' } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   create(data: { title: string; content: string; userId: string }) {
     return this.prisma.post.create({ data });
   }

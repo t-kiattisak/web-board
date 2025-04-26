@@ -13,6 +13,10 @@ export class PostsService {
     return this.repo.findById(id);
   }
 
+  getPostsByUserId(userId: string) {
+    return this.repo.findAllByUserId(userId);
+  }
+
   createPost(userId: string, dto: { title: string; content: string }) {
     return this.repo.create({ ...dto, userId });
   }

@@ -22,6 +22,8 @@ import {
   DialogTrigger,
 } from "@/shared/components/ui/dialog"
 import NoSSR from "@/shared/components/ui/no-ssr"
+import NotFoundData from "@/shared/components/ui/not-found-data"
+import { LoadingData } from "@/shared/components/ui/loading-data"
 
 const PostDetail = () => {
   const params = useParams<{ postId: string }>()
@@ -34,19 +36,11 @@ const PostDetail = () => {
   const [comment, toggleComment, setComment] = useToggle()
 
   if (isLoading) {
-    return (
-      <div className='flex items-center justify-center h-64'>
-        <p className='text-muted-foreground'>loading...</p>
-      </div>
-    )
+    return <LoadingData />
   }
 
   if (!data) {
-    return (
-      <div className='flex items-center justify-center h-64'>
-        <p className='text-muted-foreground'>Post not found</p>
-      </div>
-    )
+    return <NotFoundData />
   }
 
   const post = data.data

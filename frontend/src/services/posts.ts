@@ -10,6 +10,11 @@ export const allPost = async () => {
   return data
 }
 
+export const allPostByUserId = async () => {
+  const { data } = await network.get<AllPostsData>("/posts/user/me")
+  return data
+}
+
 export const getPostById = async (postId: string) => {
   const { data } = await network.get<PostByIdData>(`/posts/${postId}`)
   return data

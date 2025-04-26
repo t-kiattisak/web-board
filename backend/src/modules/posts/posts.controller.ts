@@ -29,6 +29,17 @@ export class PostsController {
     return this.service.getById(id);
   }
 
+  // by user
+  @UseGuards(JwtAuthGuard)
+  @Get('user/me')
+  async getMyPosts(@CurrentUser() user: User) {
+    const posts = await this.service.getPostsByUserId(user.userId);
+    return {
+      data: posts,
+      message: 'Posts fetched successfully',
+    };
+  }
+
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@CurrentUser() user: User, @Body() dto: CreatePostDto) {

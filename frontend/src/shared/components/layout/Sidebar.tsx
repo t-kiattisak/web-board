@@ -9,7 +9,7 @@ export default function Sidebar() {
         <Link href='/' className='flex items-center gap-2 font-medium'>
           <Home size={20} /> Home
         </Link>
-        <Link href='/' className='flex items-center gap-2 font-medium'>
+        <Link href='/our-blog' className='flex items-center gap-2 font-medium'>
           <SquarePenIcon size={20} /> Our Blog
         </Link>
       </nav>
