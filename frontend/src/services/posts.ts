@@ -1,7 +1,7 @@
 import { AllPostsData } from "@/domain/posts/allPostsData"
 import { createPostInput, CreatePostInput } from "@/domain/posts/createPost"
 import { updatePostInput, UpdatePostInput } from "@/domain/posts/updatePost"
-import { network } from "@/shared/utils/network"
+import { network } from "@/lib/utils/network"
 
 export const allPost = async () => {
   const { data } = await network.get<AllPostsData>("/posts")
