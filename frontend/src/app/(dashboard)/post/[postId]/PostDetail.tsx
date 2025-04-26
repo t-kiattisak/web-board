@@ -4,7 +4,7 @@ import { Button } from "@/shared/components/ui/button"
 import { MessageCircle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { useGetPostById } from "@/hooks/services/posts"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import {
   Avatar,
   AvatarFallback,
@@ -24,8 +24,11 @@ import {
 import NoSSR from "@/shared/components/ui/no-ssr"
 import NotFoundData from "@/shared/components/ui/not-found-data"
 import { LoadingData } from "@/shared/components/ui/loading-data"
+import { useSession } from "next-auth/react"
 
 const PostDetail = () => {
+  const session = useSession()
+  const router = useRouter()
   const params = useParams<{ postId: string }>()
   const { data, isLoading, refetch } = useGetPostById(params.postId)
 
@@ -120,7 +123,10 @@ const PostDetail = () => {
           <Button
             variant='outline'
             className='border-primary text-primary'
-            onClick={() => toggleComment()}
+            onClick={() => {
+              if (session.status === "authenticated") toggleComment()
+              else router.push("/login")
+            }}
           >
             Add Comments
           </Button>
