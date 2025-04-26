@@ -16,9 +16,10 @@ import { Button } from "../ui/button"
 import { useUpdatePost } from "@/hooks/services/posts"
 import { toast } from "sonner"
 import { AllPostsDaum } from "@/domain/posts/allPostsData"
+import { useCategoryAll } from "@/hooks/services/category"
 
 const editPostSchema = z.object({
-  community: z.string().optional(),
+  community: z.string().min(1, "Community is required"),
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
 })
@@ -35,9 +36,14 @@ const EditPostForm = ({
   defaultValues,
   editSuccess,
 }: CreatePostFormProps) => {
+  const { data: categoryData } = useCategoryAll()
+  console.log("defaultValues", defaultValues)
   const form = useForm<EditPostForm>({
     resolver: zodResolver(editPostSchema),
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      community: defaultValues?.category.id,
+    },
   })
 
   const { mutate } = useUpdatePost()
@@ -45,6 +51,7 @@ const EditPostForm = ({
     mutate(
       {
         postId: defaultValues.id,
+        categoryId: values.community,
         title: values.title,
         content: values.content,
       },
@@ -72,7 +79,11 @@ const EditPostForm = ({
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='xc'>xc</SelectItem>
+                  {categoryData?.data.map(({ id, name }) => (
+                    <SelectItem key={id} value={id}>
+                      {name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

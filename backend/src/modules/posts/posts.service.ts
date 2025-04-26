@@ -31,7 +31,7 @@ export class PostsService {
   async updatePost(
     id: string,
     userId: string,
-    dto: { title?: string; content?: string },
+    dto: { title?: string; content?: string; categoryId?: string },
   ) {
     const post = await this.repo.findByIdWithOwnerCheck(id, userId);
     if (!post) throw new ForbiddenException('You can only edit your own post');

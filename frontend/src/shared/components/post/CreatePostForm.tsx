@@ -15,9 +15,10 @@ import {
 import { Button } from "../ui/button"
 import { useCreatePost } from "@/hooks/services/posts"
 import { toast } from "sonner"
+import { useCategoryAll } from "@/hooks/services/category"
 
 const createPostSchema = z.object({
-  community: z.string().optional(),
+  community: z.string().min(1, "Community is required"),
   title: z.string().min(1, "Title is required"),
   content: z.string().min(1, "Content is required"),
 })
@@ -28,6 +29,8 @@ type CreatePostFormProps = {
   createSuccess: VoidFunction
 }
 const CreatePostForm = ({ onClose, createSuccess }: CreatePostFormProps) => {
+  const { data: categoryData } = useCategoryAll()
+
   const form = useForm<CreatePostInput>({
     resolver: zodResolver(createPostSchema),
     defaultValues: {
@@ -40,6 +43,7 @@ const CreatePostForm = ({ onClose, createSuccess }: CreatePostFormProps) => {
   const onSubmit = (values: CreatePostInput) => {
     mutate(
       {
+        categoryId: values.community,
         title: values.title,
         content: values.content,
       },
@@ -67,7 +71,11 @@ const CreatePostForm = ({ onClose, createSuccess }: CreatePostFormProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value='xc'>xc</SelectItem>
+                  {categoryData?.data.map(({ id, name }) => (
+                    <SelectItem key={id} value={id}>
+                      {name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />

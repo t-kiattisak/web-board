@@ -8,4 +8,8 @@ export class UpdatePostDto {
   @IsOptional()
   @IsString()
   content?: string;
+
+  @IsOptional()
+  @IsString()
+  categoryId?: string;
 }

@@ -60,7 +60,10 @@ export class PostsRepository {
     return this.prisma.post.create({ data });
   }
 
-  update(id: string, data: { title?: string; content?: string }) {
+  update(
+    id: string,
+    data: { title?: string; content?: string; categoryId?: string },
+  ) {
     return this.prisma.post.update({ where: { id }, data });
   }
 
