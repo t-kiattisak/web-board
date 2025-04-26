@@ -1,5 +1,9 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { PostsRepository } from './posts.repository';
+import { UpdatePostDto } from './dto/update-post.dto';
+import { CreatePostDto } from './dto/create-post.dto';
+import { CreatePostEntity } from './entities/create-post.entity';
+import { UpdatePostEntity } from './entities/update-post.entity';
 
 @Injectable()
 export class PostsService {
@@ -17,25 +21,16 @@ export class PostsService {
     return this.repo.findAllByUserId(userId);
   }
 
-  createPost(
-    userId: string,
-    dto: {
-      title: string;
-      content: string;
-      categoryId?: string;
-    },
-  ) {
-    return this.repo.create({ ...dto, userId });
+  createPost(userId: string, dto: CreatePostDto) {
+    const entity = new CreatePostEntity({ userId, ...dto });
+    return this.repo.create(entity);
   }
 
-  async updatePost(
-    id: string,
-    userId: string,
-    dto: { title?: string; content?: string; categoryId?: string },
-  ) {
+  async updatePost(id: string, userId: string, dto: UpdatePostDto) {
+    const entity = new UpdatePostEntity(dto);
     const post = await this.repo.findByIdWithOwnerCheck(id, userId);
     if (!post) throw new ForbiddenException('You can only edit your own post');
-    return this.repo.update(id, dto);
+    return this.repo.update(id, entity);
   }
 
   async deletePost(id: string, userId: string) {

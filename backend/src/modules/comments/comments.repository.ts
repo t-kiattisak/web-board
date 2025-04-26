@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/prisma/prisma.service';
+import { CommentEntity } from './entities/comment.entity';
 
 @Injectable()
 export class CommentsRepository {
   constructor(private prisma: PrismaService) {}
 
-  create(data: { content: string; userId: string; postId: string }) {
+  create(data: CommentEntity) {
     return this.prisma.comment.create({ data });
   }
 
-  update(id: string, data: { content?: string }) {
+  update(id: string, data: Partial<Pick<CommentEntity, 'content'>>) {
     return this.prisma.comment.update({ where: { id }, data });
   }
 

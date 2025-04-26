@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/prisma/prisma.service';
+import { CreatePostEntity } from './entities/create-post.entity';
+import { UpdatePostEntity } from './entities/update-post.entity';
 
 @Injectable()
 export class PostsRepository {
@@ -51,19 +53,12 @@ export class PostsRepository {
     });
   }
 
-  create(data: {
-    title: string;
-    content: string;
-    userId: string;
-    categoryId?: string;
-  }) {
+  create(data: CreatePostEntity) {
+    console.log('data', data);
     return this.prisma.post.create({ data });
   }
 
-  update(
-    id: string,
-    data: { title?: string; content?: string; categoryId?: string },
-  ) {
+  update(id: string, data: UpdatePostEntity) {
     return this.prisma.post.update({ where: { id }, data });
   }
 
