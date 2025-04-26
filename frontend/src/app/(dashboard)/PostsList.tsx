@@ -1,5 +1,6 @@
 "use client"
 import { useAllPost } from "@/hooks/services/posts"
+import { useSearchPosts } from "@/hooks/useSearchPosts"
 import { useToggle } from "@/hooks/useToggle"
 import { CreatePostForm } from "@/shared/components/post/CreatePostForm"
 import PostCard from "@/shared/components/post/PostCard"
@@ -20,15 +21,17 @@ import Link from "next/link"
 import React from "react"
 
 const PostsList = () => {
-  const { data, isLoading, refetch } = useAllPost()
+  const { data: postAllData, isLoading, refetch } = useAllPost()
   const [open, toggleOpen, setOpen] = useToggle()
   const session = useSession()
-  console.log("data", data)
+
+  const { data, setSearch, search } = useSearchPosts(postAllData)
+
   if (isLoading) {
     return <LoadingData />
   }
 
-  if (!data || data.data.length === 0) {
+  if (!postAllData || postAllData.data.length === 0) {
     return <NotFoundData />
   }
 
@@ -37,6 +40,8 @@ const PostsList = () => {
       <div className='flex space-x-2'>
         <Input
           placeholder='Search'
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
           startIcon={<SearchIcon className='text-gray-400' />}
         />
         {session.status === "authenticated" && (
@@ -62,20 +67,24 @@ const PostsList = () => {
         )}
       </div>
       <div className='bg-card divide-y-3 divide-solid divide-gray-100 text-card-foreground rounded-lg shadow-sm space-y-3 border border-border'>
-        {data.data.map((item, index) => (
-          <div key={index}>
-            <Link href={`/post/${item.id}`}>
-              <PostCard
-                avatarUrl={item.user.avatarUrl}
-                author={item.user.username}
-                category={item.category.name ?? ""}
-                title={item.title}
-                excerpt={item.content}
-                commentCount={item.comments.length}
-              />
-            </Link>
-          </div>
-        ))}
+        {data.length === 0 ? (
+          <NotFoundData />
+        ) : (
+          data.map((item, index) => (
+            <div key={index}>
+              <Link href={`/post/${item.id}`}>
+                <PostCard
+                  avatarUrl={item.user.avatarUrl}
+                  author={item.user.username}
+                  category={item.category.name ?? ""}
+                  title={item.title}
+                  excerpt={item.content}
+                  commentCount={item.comments.length}
+                />
+              </Link>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )

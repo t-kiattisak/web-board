@@ -1,6 +1,7 @@
 "use client"
 import { AllPostsDaum } from "@/domain/posts/allPostsData"
 import { useAllPostByUserId, useDeletePost } from "@/hooks/services/posts"
+import { useSearchPosts } from "@/hooks/useSearchPosts"
 import { useToggle } from "@/hooks/useToggle"
 import { CreatePostForm } from "@/shared/components/post/CreatePostForm"
 import { EditPostForm } from "@/shared/components/post/EditPostForm"
@@ -34,8 +35,8 @@ import React, { useState } from "react"
 import { toast } from "sonner"
 
 const OutBlogList = () => {
-  const { data, isLoading, refetch } = useAllPostByUserId()
-
+  const { data: allPostData, isLoading, refetch } = useAllPostByUserId()
+  const { data, search, setSearch } = useSearchPosts(allPostData)
   const [open, toggleOpen, setOpen] = useToggle()
   const [editPostData, setEditPostData] = useState<AllPostsDaum | null>(null)
   const [deletePostData, setDeletePostData] = useState<AllPostsDaum | null>(
@@ -49,7 +50,7 @@ const OutBlogList = () => {
     return <LoadingData />
   }
 
-  if (!data || data.data.length === 0) {
+  if (!allPostData || allPostData.data.length === 0) {
     return <NotFoundData />
   }
 
@@ -57,6 +58,8 @@ const OutBlogList = () => {
     <div className='p-2 space-y-3'>
       <div className='flex space-x-2'>
         <Input
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
           placeholder='Search'
           startIcon={<SearchIcon className='text-gray-400' />}
         />
@@ -131,47 +134,51 @@ const OutBlogList = () => {
       </AlertDialog>
 
       <div className='bg-card divide-y-3 divide-solid divide-gray-100 text-card-foreground rounded-lg shadow-sm space-y-3 border border-border'>
-        {data.data.map((item, index) => (
-          <div key={index}>
-            <Link href={`/post/${item.id}`}>
-              <PostCard
-                actions={
-                  <>
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      className='rounded-full p-1 px-1'
-                      onClick={(event) => {
-                        event.preventDefault()
-                        setEditPostData(item)
-                      }}
-                    >
-                      <PenLineIcon size={16} />
-                    </Button>
+        {data.length === 0 ? (
+          <NotFoundData />
+        ) : (
+          data.map((item, index) => (
+            <div key={index}>
+              <Link href={`/post/${item.id}`}>
+                <PostCard
+                  actions={
+                    <>
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        className='rounded-full p-1 px-1'
+                        onClick={(event) => {
+                          event.preventDefault()
+                          setEditPostData(item)
+                        }}
+                      >
+                        <PenLineIcon size={16} />
+                      </Button>
 
-                    <Button
-                      variant='ghost'
-                      size='icon'
-                      className='rounded-full p-1 px-1'
-                      onClick={(event) => {
-                        event.preventDefault()
-                        setDeletePostData(item)
-                      }}
-                    >
-                      <Trash2Icon size={16} />
-                    </Button>
-                  </>
-                }
-                avatarUrl='https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=3280&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-                author={item.user.username}
-                category={item.category.name}
-                title={item.title}
-                excerpt={item.content}
-                commentCount={item.comments.length}
-              />
-            </Link>
-          </div>
-        ))}
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        className='rounded-full p-1 px-1'
+                        onClick={(event) => {
+                          event.preventDefault()
+                          setDeletePostData(item)
+                        }}
+                      >
+                        <Trash2Icon size={16} />
+                      </Button>
+                    </>
+                  }
+                  avatarUrl='https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=3280&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
+                  author={item.user.username}
+                  category={item.category.name}
+                  title={item.title}
+                  excerpt={item.content}
+                  commentCount={item.comments.length}
+                />
+              </Link>
+            </div>
+          ))
+        )}
       </div>
     </div>
   )
