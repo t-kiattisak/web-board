@@ -15,6 +15,8 @@ Following a pragmatic **Clean Architecture**.
 docker compose up -d
 ```
 
+> 📝 **หมายเหตุ**: ใช้ Docker แค่สำหรับ Database (PostgreSQL) เท่านั้น — Backend ยังรันในเครื่องตรง ๆ เพื่อความเร็วในการพัฒนา
+
 > 🔹 Spin up PostgreSQL container.
 
 ### 2. Install Dependencies
