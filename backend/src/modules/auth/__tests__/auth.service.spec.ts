@@ -1,57 +1,52 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../auth.service';
-import { User } from '@prisma/client';
-import { PrismaService } from '@/infrastructure/prisma/prisma.service';
+import { AuthRepository } from '../auth.repository';
+import { JwtService } from '@nestjs/jwt';
 
 describe('AuthService', () => {
   let service: AuthService;
-
-  const mockUser: User = {
-    id: 'user-id',
-    username: 'username',
-    createdAt: new Date(),
-  };
-
-  const prismaMock = {
-    user: {
-      findUnique: jest.fn(),
-      create: jest.fn(),
-    },
-  };
+  let repo: AuthRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         {
-          provide: PrismaService,
-          useValue: prismaMock,
+          provide: AuthRepository,
+          useValue: {
+            findUserByUsername: jest.fn(),
+            createUser: jest.fn(),
+          },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn().mockReturnValue('mocked-jwt-token'),
+          },
         },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+    repo = module.get<AuthRepository>(AuthRepository);
   });
 
   it('should return existing user if found', async () => {
-    prismaMock.user.findUnique.mockResolvedValue(mockUser);
+    const user = { id: '123', username: 'testuser' }; // 👉 Mock user ขึ้นมา
+    (repo.findUserByUsername as jest.Mock).mockResolvedValue(user); // 👉 Mock function ให้คืน user
 
-    const result = await service.loginOrRegister('username');
-    expect(result).toEqual(mockUser);
-    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
-      where: { username: 'username' },
-    });
-    expect(prismaMock.user.create).not.toHaveBeenCalled();
+    const result = await service.loginOrRegister('testuser');
+    expect(result.user).toEqual(user);
+    expect(result.token).toBe('mocked-jwt-token');
   });
 
   it('should create user if not found', async () => {
-    prismaMock.user.findUnique.mockResolvedValue(null);
-    prismaMock.user.create.mockResolvedValue(mockUser);
+    const newUser = { id: '456', username: 'newuser' };
+    (repo.findUserByUsername as jest.Mock).mockResolvedValue(null);
+    (repo.createUser as jest.Mock).mockResolvedValue(newUser);
 
-    const result = await service.loginOrRegister('username');
-    expect(result).toEqual(mockUser);
-    expect(prismaMock.user.create).toHaveBeenCalledWith({
-      data: { username: 'username' },
-    });
+    const result = await service.loginOrRegister('newuser');
+    expect(result.user).toEqual(newUser);
+    expect(result.token).toBe('mocked-jwt-token');
   });
 });
