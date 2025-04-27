@@ -1,6 +1,8 @@
 "use client"
 import { AllPostsDaum } from "@/domain/posts/allPostsData"
+import { useCategoryAll } from "@/hooks/services/category"
 import { useAllPostByUserId, useDeletePost } from "@/hooks/services/posts"
+import { useSearchCategoryPosts } from "@/hooks/useSearchCategoryPosts"
 import { useSearchPosts } from "@/hooks/useSearchPosts"
 import { useToggle } from "@/hooks/useToggle"
 import { CreatePostForm } from "@/shared/components/post/CreatePostForm"
@@ -27,6 +29,13 @@ import {
 import { Input } from "@/shared/components/ui/input"
 import { LoadingData } from "@/shared/components/ui/loading-data"
 import NotFoundData from "@/shared/components/ui/not-found-data"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select"
 
 import { SearchIcon, PlusIcon, PenLineIcon, Trash2Icon } from "lucide-react"
 import { useSession } from "next-auth/react"
@@ -35,8 +44,19 @@ import React, { useState } from "react"
 import { toast } from "sonner"
 
 const OutBlogList = () => {
-  const { data: allPostData, isLoading, refetch } = useAllPostByUserId()
-  const { data, search, setSearch } = useSearchPosts(allPostData)
+  const { data: postAllData, isLoading, refetch } = useAllPostByUserId()
+  const {
+    data: searchPostData,
+    setSearch,
+    search,
+  } = useSearchPosts(postAllData)
+  const {
+    data,
+    setSearch: setSearchCategory,
+    search: searchCategory,
+  } = useSearchCategoryPosts(searchPostData)
+  const { data: categoryData } = useCategoryAll()
+
   const [open, toggleOpen, setOpen] = useToggle()
   const [editPostData, setEditPostData] = useState<AllPostsDaum | null>(null)
   const [deletePostData, setDeletePostData] = useState<AllPostsDaum | null>(
@@ -50,7 +70,7 @@ const OutBlogList = () => {
     return <LoadingData />
   }
 
-  if (!allPostData || allPostData.data.length === 0) {
+  if (!postAllData || postAllData.data.length === 0) {
     return <NotFoundData />
   }
 
@@ -63,6 +83,25 @@ const OutBlogList = () => {
           placeholder='Search'
           startIcon={<SearchIcon className='text-gray-400' />}
         />
+
+        <Select
+          onValueChange={(value) => setSearchCategory(value)}
+          value={searchCategory}
+          defaultValue={searchCategory}
+        >
+          <SelectTrigger className='w-40'>
+            <SelectValue placeholder='Choose a community' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value='all'>All</SelectItem>
+            {categoryData?.data.map(({ id, name }) => (
+              <SelectItem key={id} value={id}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         {session.status === "authenticated" && (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
@@ -75,7 +114,10 @@ const OutBlogList = () => {
                 <DialogTitle>Create Post</DialogTitle>
               </DialogHeader>
               <CreatePostForm
-                createSuccess={() => refetch()}
+                createSuccess={() => {
+                  refetch()
+                  setOpen(false)
+                }}
                 onClose={() => toggleOpen()}
               />
             </DialogContent>

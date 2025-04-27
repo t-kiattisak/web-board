@@ -14,9 +14,11 @@ import {
   DrawerTrigger,
 } from "../ui/drawer"
 import Sidebar from "./Sidebar"
+import { useToggle } from "@/hooks/useToggle"
 
 export default function Topbar() {
   const session = useSession()
+  const [open, toggleOpen] = useToggle()
 
   return (
     <header className='w-full h-16 bg-sidebar-primary text-white px-6 py-4 flex items-center justify-between'>
@@ -45,7 +47,7 @@ export default function Topbar() {
           </div>
         )}
 
-        <Drawer direction='right'>
+        <Drawer open={open} onOpenChange={() => toggleOpen()} direction='right'>
           <DrawerTrigger asChild>
             <MenuIcon className='block md:hidden' />
           </DrawerTrigger>
@@ -58,7 +60,7 @@ export default function Topbar() {
               </DrawerTitle>
               <DrawerDescription />
             </DrawerHeader>
-            <Sidebar />
+            <Sidebar onTap={toggleOpen} />
           </DrawerContent>
         </Drawer>
       </div>

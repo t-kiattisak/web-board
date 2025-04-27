@@ -1,5 +1,7 @@
 "use client"
+import { useCategoryAll } from "@/hooks/services/category"
 import { useAllPost } from "@/hooks/services/posts"
+import { useSearchCategoryPosts } from "@/hooks/useSearchCategoryPosts"
 import { useSearchPosts } from "@/hooks/useSearchPosts"
 import { useToggle } from "@/hooks/useToggle"
 import { CreatePostForm } from "@/shared/components/post/CreatePostForm"
@@ -15,6 +17,13 @@ import {
 import { Input } from "@/shared/components/ui/input"
 import { LoadingData } from "@/shared/components/ui/loading-data"
 import NotFoundData from "@/shared/components/ui/not-found-data"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/shared/components/ui/select"
 import { PlusIcon, SearchIcon } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
@@ -24,8 +33,18 @@ const PostsList = () => {
   const { data: postAllData, isLoading, refetch } = useAllPost()
   const [open, toggleOpen, setOpen] = useToggle()
   const session = useSession()
+  const { data: categoryData } = useCategoryAll()
 
-  const { data, setSearch, search } = useSearchPosts(postAllData)
+  const {
+    data: searchPostData,
+    setSearch,
+    search,
+  } = useSearchPosts(postAllData)
+  const {
+    data,
+    setSearch: setSearchCategory,
+    search: searchCategory,
+  } = useSearchCategoryPosts(searchPostData)
 
   if (isLoading) {
     return <LoadingData />
@@ -44,6 +63,25 @@ const PostsList = () => {
           onChange={(event) => setSearch(event.target.value)}
           startIcon={<SearchIcon className='text-gray-400' />}
         />
+
+        <Select
+          onValueChange={(value) => setSearchCategory(value)}
+          value={searchCategory}
+          defaultValue={searchCategory}
+        >
+          <SelectTrigger className='w-40'>
+            <SelectValue placeholder='Choose a community' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value='all'>All</SelectItem>
+            {categoryData?.data.map(({ id, name }) => (
+              <SelectItem key={id} value={id}>
+                {name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
         {session.status === "authenticated" && (
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
