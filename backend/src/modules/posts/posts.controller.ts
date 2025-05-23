@@ -7,6 +7,7 @@ import {
   UseGuards,
   Put,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -14,12 +15,15 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CurrentUser } from '@/common/decorators/currentUser.decorator';
 import { User } from '../auth/jwt.strategy';
+import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
+import { PostResponseDto } from './dto/post-response.dto';
 
 @Controller('posts')
 export class PostsController {
   constructor(private readonly service: PostsService) {}
 
   @Get()
+  @UseInterceptors(new TransformInterceptor(PostResponseDto))
   getAll() {
     return this.service.getAll();
   }
